@@ -141,7 +141,7 @@ h1,h2,h3{text-wrap:balance}
 .axis .done{position:absolute;left:0;top:0;bottom:0;background:var(--celeste-strong)}
 .year{position:absolute;top:162px;transform:translateX(-50%);font:700 12px/1 var(--font-mono);color:var(--muted)}
 .year::before{content:"";position:absolute;left:50%;top:-16px;width:2px;height:10px;background:var(--ink)}
-.ev{position:absolute;transform:translateX(-50%);display:grid;justify-items:center;gap:6px;width:150px;text-align:center}
+.ev{position:absolute;transform:translateX(-50%);display:grid;justify-items:center;gap:6px;width:170px;text-align:center}
 .ev.up{bottom:150px;padding-bottom:0}.ev.down{top:154px;padding-top:0}
 .ev .stem{width:2px;height:34px;background:var(--line)}
 .ev .dot{width:18px;height:18px;border-radius:50%;border:3px solid var(--ink);background:var(--paper);position:absolute;left:50%;transform:translateX(-50%)}
@@ -151,8 +151,8 @@ h1,h2,h3{text-wrap:balance}
 .ev.next.up .dot{bottom:-14px}.ev.next.down .dot{top:-14px}
 .ev .nm{font:400 22px/1 var(--font-display);text-transform:uppercase}
 .ev .dt{font:500 12px/1.3 var(--font-mono);color:var(--muted)}
-.hoy{position:absolute;top:40px;bottom:40px;width:0;border-left:2px dashed var(--vivo)}
-.hoy span{position:absolute;bottom:-22px;left:0;transform:translateX(-50%);font:700 11px/1 var(--font-mono);color:var(--vivo);letter-spacing:.1em}
+.hoy{position:absolute;top:140px;width:0;height:24px;border-left:3px solid var(--vivo);transform:translateX(-1.5px);z-index:1}
+.hoy span{position:absolute;bottom:28px;left:0;transform:translateX(-50%);font:700 11px/1 var(--font-mono);color:var(--on-strong);background:var(--vivo);padding:4px 6px;border-radius:3px;letter-spacing:.1em;white-space:nowrap}
 .tl-list{display:none}
 @media (max-width:860px){.track-wrap{display:none}.tl-list{display:grid}}
 .tl-list{list-style:none;margin:0 0 var(--s5);padding:0}
@@ -325,7 +325,7 @@ footer p{margin:0;max-width:70ch}
           <p class="eyebrow">04 · Línea de tiempo</p>
           <h2 class="display h2">Qué viene</h2>
         </div>
-        <p class="lead" style="max-width:40ch">De septiembre de 2026 a agosto de 2028, a escala. La línea roja marca hoy.</p>
+        <p class="lead" style="max-width:40ch">De julio de 2026 a septiembre de 2028, a escala. La marca roja señala hoy.</p>
       </div>
       <div class="track-wrap" id="track" role="img" aria-label="Línea de tiempo de eventos entre septiembre de 2026 y agosto de 2028"></div>
       <ol class="tl-list" id="tl-list"></ol>
@@ -428,7 +428,7 @@ footer p{margin:0;max-width:70ch}
   }
 
   // Línea de tiempo a escala
-  var A=D('2026-09-01T00:00:00Z'),B=D('2028-09-01T00:00:00Z');
+  var A=D('2026-07-01T00:00:00Z'),B=D('2028-09-01T00:00:00Z');
   var pct=function(d){return Math.max(0,Math.min(100,(d-A)/(B-A)*100))};
   var tr=document.getElementById('track'),h='<div class="axis"><div class="done" style="width:'+pct(now)+'%"></div></div>';
   ['2027','2028'].forEach(function(y){h+='<span class="year" style="left:'+pct(D(y+'-01-01T00:00:00Z'))+'%">'+y+'</span>'});
