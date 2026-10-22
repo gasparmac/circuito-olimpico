@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El Circuito Olímpico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: cartel de estadio. Titulares gigantes en Anton, bandas de bandera como cortes de sección,
+   el podio ordena los niveles y una línea de tiempo a escala real lleva de Santa Fe 2026 a LA 2028.
+   Tokens del design system Podio. */
+:root{
+  --paper:#f4f8fc; --surface:#ffffff; --ink:#0b1d33; --muted:#4a5d74; --line:#d3dfea;
+  --celeste:#74acdf; --celeste-strong:#1b5e9e; --on-strong:#ffffff;
+  --sol:#f6b40e; --ink-fixed:#0b1d33; --plata:#aeb8c2; --bronce:#c07a3e; --vivo:#c8322a;
+  --font-display:Anton,"Arial Narrow",Impact,sans-serif;
+  --font-sans:Archivo,"Helvetica Neue",Arial,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  --s1:4px; --s2:8px; --s3:16px; --s4:24px; --s5:48px; --s6:96px;
+  --wrap:1180px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#08172a; --surface:#0f2440; --ink:#eaf2fa; --muted:#9db2c8; --line:#22395a;
+  --celeste-strong:#8cc0ee; --on-strong:#08172a; --bronce:#c98a52; --vivo:#ff6b5e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#08172a; --surface:#0f2440; --ink:#eaf2fa; --muted:#9db2c8; --line:#22395a;
+  --celeste-strong:#8cc0ee; --on-strong:#08172a; --bronce:#c98a52; --vivo:#ff6b5e; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font:400 17px/1.6 var(--font-sans);margin:0;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+a{color:var(--celeste-strong)}
+h1,h2,h3{text-wrap:balance}
+.wrap{max-width:var(--wrap);margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.band{padding-block:var(--s6)}
+.eyebrow{font:700 12px/16px var(--font-sans);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0}
+.display{font-family:var(--font-display);font-weight:400;text-transform:uppercase;line-height:1.02;letter-spacing:.01em;margin:0}
+.eyebrow + .display{margin-top:20px}
+.h2{font-size:clamp(44px,7vw,84px)}
+.lead{font-size:clamp(18px,2vw,21px);line-height:1.5;max-width:58ch;margin:0}
+.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+:focus-visible{outline:3px solid var(--sol);outline-offset:3px}
+
+/* Botones y chips (Podio) */
+.po-btn{display:inline-flex;align-items:center;gap:8px;font:700 15px/1 var(--font-sans);text-transform:uppercase;letter-spacing:.06em;padding:15px 22px;border-radius:4px;border:2px solid transparent;text-decoration:none;transition:transform .15s ease}
+.po-btn:hover{transform:translateY(-2px)}
+.po-btn--primary{background:var(--celeste-strong);color:var(--on-strong)}
+.po-btn--ghost{color:var(--ink);border-color:var(--ink)}
+.po-nivel{display:inline-flex;align-items:center;gap:6px;font:700 11px/1 var(--font-sans);letter-spacing:.12em;text-transform:uppercase;padding:6px 10px;border-radius:999px;color:var(--ink-fixed);width:max-content}
+.po-nivel::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.n-regional{background:var(--celeste)}.n-continental{background:var(--plata)}.n-mundial{background:var(--bronce)}.n-olimpico{background:var(--sol)}
+.estado{font:700 12px/1 var(--font-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.estado.vivo{color:var(--vivo)}
+
+/* Nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:var(--s3);padding-block:14px}
+.brand{display:flex;align-items:center;gap:10px;font:400 22px/1 var(--font-display);text-transform:uppercase;color:var(--ink);text-decoration:none;letter-spacing:.02em}
+.brand svg{width:26px;height:26px}
+.nav ul{list-style:none;display:flex;gap:22px;margin:0;padding:0}
+.nav ul a{color:var(--ink);text-decoration:none;font:700 13px/1 var(--font-sans);letter-spacing:.08em;text-transform:uppercase}
+.nav ul a:hover{color:var(--celeste-strong)}
+@media (max-width:760px){.nav ul{display:none}}
+
+/* Hero */
+.hero{position:relative;overflow:hidden;padding-block:72px 64px}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:var(--s5);align-items:end;position:relative;z-index:1}
+.hero h1{font-size:clamp(68px,12.5vw,176px);line-height:.96}
+.hero h1 .c{color:var(--celeste-strong);display:block}
+.hero .lead{margin-top:var(--s4)}
+.ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+.sun{position:absolute;right:-180px;top:-200px;width:620px;height:620px;opacity:.9;pointer-events:none}
+.sun g{transform-origin:310px 310px;animation:spin 90s linear infinite}
+.sun .disc,.sun .ray{fill:var(--sol)}
+.sun .halo{fill:var(--paper)}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.sun g{animation:none}.po-btn{transition:none}}
+
+.nextbox{background:var(--surface);border:3px solid var(--sol);padding:var(--s4);display:grid;gap:12px;min-width:0}
+.nextbox .eyebrow + .display,.rel .txt .display{margin-top:0}
+.nextbox h2{font-size:clamp(40px,5vw,58px)}
+.nextbox .sub{font-weight:700;margin:0}
+.count{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;border-top:1px solid var(--line);padding-top:16px;margin-top:4px}
+.count div{display:grid;gap:2px}
+.count b{font:400 clamp(34px,4vw,48px)/1 var(--font-display);font-variant-numeric:tabular-nums}
+.count span{font:700 10px/1 var(--font-sans);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.nextbox .meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center}
+@media (max-width:900px){.hero .wrap{grid-template-columns:1fr}.sun{width:380px;height:380px;right:-210px;top:-170px;opacity:.55}}
+
+/* Bandera */
+.flag{display:grid;grid-template-rows:repeat(3,22px)}
+.flag i{display:block}.flag i:nth-child(odd){background:var(--celeste)}.flag i:nth-child(2){background:var(--paper);display:flex;justify-content:center;align-items:center}
+.flag i:nth-child(2)::after{content:"";width:16px;height:16px;border-radius:50%;background:var(--sol)}
+
+/* Qué es */
+.que .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--s5);align-items:start}
+.que .txt{display:grid;gap:var(--s3)}
+.que p{margin:0;max-width:60ch}
+.nota{border-top:3px solid var(--ink);padding-top:var(--s3);font-weight:500}
+@media (max-width:820px){.que .wrap{grid-template-columns:1fr}}
+
+/* Niveles / podio */
+.niveles{background:var(--surface);border-block:1px solid var(--line)}
+.niveles header{display:flex;justify-content:space-between;align-items:end;gap:var(--s4);flex-wrap:wrap;margin-bottom:var(--s5)}
+.podio{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:end}
+.step{display:grid;gap:14px;min-width:0}
+.block{display:flex;align-items:flex-end;padding:16px;color:var(--ink-fixed);font:400 clamp(26px,3.2vw,40px)/.95 var(--font-display);text-transform:uppercase}
+.step:nth-child(1) .block{height:150px;background:var(--celeste)}
+.step:nth-child(2) .block{height:210px;background:var(--plata)}
+.step:nth-child(3) .block{height:270px;background:var(--bronce)}
+.step:nth-child(4) .block{height:330px;background:var(--sol)}
+.step .esc{font:700 12px/16px var(--font-mono);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.step ul{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:15px;line-height:1.4}
+.step li{border-top:1px solid var(--line);padding-top:6px}
+@media (max-width:760px){
+  .podio{grid-template-columns:1fr;gap:20px}
+  .step .block{height:auto!important;padding:14px 16px}
+  .step:nth-child(1) .block{width:55%}.step:nth-child(2) .block{width:70%}.step:nth-child(3) .block{width:85%}.step:nth-child(4) .block{width:100%}
+}
+
+/* Santa Fe */
+.sf{background:var(--celeste);color:var(--ink-fixed)}
+.sf .eyebrow{color:var(--ink-fixed)}
+.sf .wrap{display:grid;gap:var(--s4)}
+.sf h2{font-size:clamp(56px,10vw,140px)}
+.sedes{display:flex;flex-wrap:wrap;gap:0;border-top:2px solid var(--ink-fixed);border-bottom:2px solid var(--ink-fixed)}
+.sedes span{flex:1 1 180px;font:400 clamp(28px,4vw,44px)/1 var(--font-display);text-transform:uppercase;padding:18px 0}
+.sedes span+span{border-left:2px solid var(--ink-fixed);padding-left:18px}
+.sf .row{display:flex;flex-wrap:wrap;gap:var(--s4) var(--s5);align-items:baseline}
+.sf .row .mono{font-size:20px;font-weight:700}
+.sf p{max-width:60ch;margin:0;font-weight:500}
+.tag-done{font:700 12px/1 var(--font-mono);text-transform:uppercase;letter-spacing:.08em;background:var(--ink-fixed);color:var(--celeste);padding:7px 10px}
+@media (max-width:560px){.sedes span+span{border-left:0;padding-left:0;border-top:2px solid var(--ink-fixed)}}
+
+/* Línea de tiempo */
+.tl-head{display:flex;justify-content:space-between;align-items:end;gap:var(--s4);flex-wrap:wrap;margin-bottom:var(--s5)}
+.track-wrap{position:relative;height:300px;margin-bottom:var(--s5)}
+.axis{position:absolute;left:0;right:0;top:150px;height:4px;background:var(--ink)}
+.axis .done{position:absolute;left:0;top:0;bottom:0;background:var(--celeste-strong)}
+.year{position:absolute;top:162px;transform:translateX(-50%);font:700 12px/1 var(--font-mono);color:var(--muted)}
+.year::before{content:"";position:absolute;left:50%;top:-16px;width:2px;height:10px;background:var(--ink)}
+.ev{position:absolute;transform:translateX(-50%);display:grid;justify-items:center;gap:6px;width:150px;text-align:center}
+.ev.up{bottom:150px;padding-bottom:0}.ev.down{top:154px;padding-top:0}
+.ev .stem{width:2px;height:34px;background:var(--line)}
+.ev .dot{width:18px;height:18px;border-radius:50%;border:3px solid var(--ink);background:var(--paper);position:absolute;left:50%;transform:translateX(-50%)}
+.ev.up .dot{bottom:-11px}.ev.down .dot{top:-11px}
+.ev.past .dot{background:var(--celeste-strong);border-color:var(--celeste-strong)}
+.ev.next .dot{background:var(--sol);border-color:var(--sol);width:24px;height:24px}
+.ev.next.up .dot{bottom:-14px}.ev.next.down .dot{top:-14px}
+.ev .nm{font:400 22px/1 var(--font-display);text-transform:uppercase}
+.ev .dt{font:500 12px/1.3 var(--font-mono);color:var(--muted)}
+.hoy{position:absolute;top:40px;bottom:40px;width:0;border-left:2px dashed var(--vivo)}
+.hoy span{position:absolute;bottom:-22px;left:0;transform:translateX(-50%);font:700 11px/1 var(--font-mono);color:var(--vivo);letter-spacing:.1em}
+.tl-list{display:none}
+@media (max-width:860px){.track-wrap{display:none}.tl-list{display:grid}}
+.tl-list{list-style:none;margin:0 0 var(--s5);padding:0}
+.tl-list li{display:grid;grid-template-columns:84px 18px minmax(0,1fr);gap:12px;padding-bottom:22px;position:relative}
+.tl-list li::after{content:"";position:absolute;left:104px;top:16px;bottom:0;width:2px;background:var(--line)}
+.tl-list li:last-child::after{display:none}
+.tl-list .f{font:500 12px/20px var(--font-mono);color:var(--muted);text-align:right;text-transform:uppercase}
+.tl-list .d{width:14px;height:14px;border-radius:50%;border:3px solid var(--ink);background:var(--paper);margin-top:3px;z-index:1}
+.tl-list li.past .d{background:var(--celeste-strong);border-color:var(--celeste-strong)}
+.tl-list li.next .d{background:var(--sol);border-color:var(--sol)}
+.tl-list b{font:400 22px/1.05 var(--font-display);text-transform:uppercase;display:block;font-weight:400}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);padding:var(--s4);display:grid;gap:10px;align-content:start;min-width:0}
+.card.next{border:3px solid var(--sol)}
+.card .top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.card .dt{font:500 14px/20px var(--font-mono);color:var(--muted)}
+.card h3{font:400 38px/.95 var(--font-display);text-transform:uppercase;margin:4px 0 0}
+.card .lugar{font-weight:700;margin:0}
+.card p{margin:0;color:var(--muted);font-size:15px;line-height:1.5}
+.card .falta{font:700 13px/1 var(--font-mono);color:var(--celeste-strong);border-top:1px solid var(--line);padding-top:12px;margin-top:4px}
+
+/* Relación */
+.rel .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--s5);align-items:center}
+.rel svg{width:100%;max-width:520px;height:auto;justify-self:center}
+.rel .o{fill:var(--surface);stroke:var(--ink);stroke-width:2}
+.rel .m{fill:var(--plata)}.rel .i{fill:var(--celeste)}
+.rel text{font-family:var(--font-display);text-transform:uppercase;font-size:22px}
+.rel .t-o{fill:var(--ink)}.rel .t-f{fill:var(--ink-fixed)}
+.rel .t-s{font-family:var(--font-mono);font-size:12px;text-transform:none}
+.rel .txt{display:grid;gap:var(--s3)}
+.rel dl{margin:0;display:grid;gap:14px}
+.rel dl div{display:grid;grid-template-columns:120px minmax(0,1fr);gap:12px;border-top:1px solid var(--line);padding-top:12px}
+.rel dt{font:700 12px/20px var(--font-sans);letter-spacing:.1em;text-transform:uppercase}
+.rel dd{margin:0}
+.aviso{background:var(--surface);border:1px solid var(--line);padding:16px 18px;font-weight:500}
+@media (max-width:860px){.rel .wrap{grid-template-columns:1fr}.rel dl div{grid-template-columns:1fr;gap:2px}}
+
+/* Idea central */
+.idea{background:var(--sol);color:var(--ink-fixed)}
+.idea .eyebrow{color:var(--ink-fixed)}
+.idea blockquote{margin:20px 0 0;font:400 clamp(34px,5.4vw,68px)/1.06 var(--font-display);text-transform:uppercase;max-width:22ch}
+.idea p{max-width:62ch;margin:var(--s4) 0 0;font-weight:500}
+
+/* Fuentes y pie */
+.fuentes ul{list-style:none;margin:var(--s4) 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0;border-top:2px solid var(--ink)}
+.fuentes li{border-bottom:1px solid var(--line)}
+.fuentes a{display:grid;gap:4px;padding:16px 4px;text-decoration:none;color:var(--ink)}
+.fuentes a span{font:500 13px/1 var(--font-mono);color:var(--celeste-strong)}
+.fuentes a:hover b{text-decoration:underline}
+footer{border-top:1px solid var(--line);padding-block:32px;color:var(--muted);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+footer p{margin:0;max-width:70ch}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="El Circuito Olímpico, inicio">
+      <svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="6" fill="var(--sol)"/><g fill="var(--sol)"><rect x="12" y="0" width="2" height="5" rx="1"/><rect x="12" y="21" width="2" height="5" rx="1"/><rect x="0" y="12" width="5" height="2" rx="1"/><rect x="21" y="12" width="5" height="2" rx="1"/></g></svg>
+      Circuito
+    </a>
+    <ul>
+      <li><a href="#que-es">Qué es</a></li>
+      <li><a href="#niveles">Niveles</a></li>
+      <li><a href="#santa-fe">Santa Fe 2026</a></li>
+      <li><a href="#que-viene">Qué viene</a></li>
+    </ul>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <svg class="sun" viewBox="0 0 620 620" aria-hidden="true">
+      <g id="rays"></g>
+    </svg>
+    <div class="wrap">
+      <div>
+        <p class="eyebrow">Material educativo · Calendario al 22 de octubre de 2026</p>
+        <h1 class="display">El circuito <span class="c">olímpico</span></h1>
+        <p class="lead">Los grandes eventos deportivos: dónde estamos y qué viene. Desde los Suramericanos que pasaron por Santa Fe hasta Los Ángeles 2028.</p>
+        <div class="ctas">
+          <a class="po-btn po-btn--primary" href="#que-viene">Ver la línea de tiempo</a>
+          <a class="po-btn po-btn--ghost" href="#que-es">Qué es el circuito</a>
+        </div>
+      </div>
+      <aside class="nextbox" aria-live="polite">
+        <div class="meta"><p class="eyebrow">Próxima parada</p><span class="po-nivel n-olimpico" id="next-nivel">Olímpico</span></div>
+        <h2 class="display" id="next-name">Dakar 2026</h2>
+        <p class="sub" id="next-sub">Juegos Olímpicos de la Juventud · Dakar, Senegal</p>
+        <span class="mono" id="next-dates" style="color:var(--muted);font-size:14px">31.10 — 13.11.2026</span>
+        <div class="count" id="count">
+          <div><b id="c-d">--</b><span>Días</span></div>
+          <div><b id="c-h">--</b><span>Horas</span></div>
+          <div><b id="c-m">--</b><span>Min</span></div>
+          <div><b id="c-s">--</b><span>Seg</span></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <div class="flag" aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <section class="band que" id="que-es">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow">01 · Qué es</p>
+        <h2 class="display h2">Mucho más que los Juegos Olímpicos</h2>
+      </div>
+      <div class="txt">
+        <p class="lead">El circuito olímpico es el conjunto de competencias internacionales que forman parte del calendario del movimiento olímpico y del deporte de alto rendimiento.</p>
+        <p>Incluye competencias regionales, continentales y mundiales que reúnen a deportistas de distintos países. Sirven para medir el nivel, desarrollar a los atletas y, en algunos casos, conseguir plazas para los Juegos Olímpicos.</p>
+        <p class="nota">No es una escalera única ni obligatoria. Cada competencia tiene sus propios objetivos, reglamentos y criterios de participación.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band niveles" id="niveles">
+    <div class="wrap">
+      <header>
+        <div>
+          <p class="eyebrow">02 · Cómo se organiza</p>
+          <h2 class="display h2">Cuatro escalas</h2>
+        </div>
+        <p class="lead" style="max-width:42ch">El calendario se lee por alcance geográfico. Son escalas, no etapas: subir un escalón no es requisito para el siguiente.</p>
+      </header>
+      <div class="podio">
+        <div class="step">
+          <div class="block">Regional</div>
+          <span class="esc">Sudamérica · ODESUR</span>
+          <ul><li>Juegos Suramericanos</li><li>Suramericanos de la Juventud</li><li>Suramericanos de Playa</li></ul>
+        </div>
+        <div class="step">
+          <div class="block">Continental</div>
+          <span class="esc">América · Panam Sports</span>
+          <ul><li>Juegos Panamericanos</li><li>Panamericanos Junior</li><li>Campeonatos continentales</li></ul>
+        </div>
+        <div class="step">
+          <div class="block">Mundial</div>
+          <span class="esc">Federaciones internacionales</span>
+          <ul><li>Campeonatos mundiales</li><li>Copas y circuitos</li><li>Torneos clasificatorios</li></ul>
+        </div>
+        <div class="step">
+          <div class="block">Olímpico</div>
+          <span class="esc">Mundo · COI</span>
+          <ul><li>JJOO de Verano</li><li>JJOO de Invierno</li><li>JJOO de la Juventud</li></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band sf" id="santa-fe">
+    <div class="wrap">
+      <p class="eyebrow">03 · Ya pasó por casa</p>
+      <h2 class="display">Santa Fe 2026</h2>
+      <div class="sedes"><span>Santa Fe</span><span>Rosario</span><span>Rafaela</span></div>
+      <div class="row">
+        <span class="mono">12 — 26.09.2026</span>
+        <span style="font-weight:700">Juegos Suramericanos · ODESUR</span>
+        <span class="tag-done">Realizado</span>
+      </div>
+      <p>Una competencia multideportiva con delegaciones de toda América del Sur. Es el nivel regional del circuito: clave para el desarrollo y el intercambio, aunque sus resultados no dan clasificación olímpica automática. Eso depende de las reglas de cada disciplina.</p>
+    </div>
+  </section>
+
+  <section class="band" id="que-viene">
+    <div class="wrap">
+      <div class="tl-head">
+        <div>
+          <p class="eyebrow">04 · Línea de tiempo</p>
+          <h2 class="display h2">Qué viene</h2>
+        </div>
+        <p class="lead" style="max-width:40ch">De septiembre de 2026 a agosto de 2028, a escala. La línea roja marca hoy.</p>
+      </div>
+      <div class="track-wrap" id="track" role="img" aria-label="Línea de tiempo de eventos entre septiembre de 2026 y agosto de 2028"></div>
+      <ol class="tl-list" id="tl-list"></ol>
+      <div class="cards" id="cards"></div>
+    </div>
+  </section>
+
+  <section class="band rel niveles">
+    <div class="wrap">
+      <svg viewBox="0 0 520 520" role="img" aria-label="Tres círculos concéntricos: Sudamérica dentro de América, dentro del mundo">
+        <circle class="o" cx="260" cy="260" r="250"/>
+        <circle class="m" cx="260" cy="300" r="180"/>
+        <circle class="i" cx="260" cy="350" r="108"/>
+        <text class="t-o" x="260" y="64" text-anchor="middle">Mundo</text>
+        <text class="t-o t-s" x="260" y="86" text-anchor="middle">Juegos Olímpicos · COI</text>
+        <text class="t-f" x="260" y="160" text-anchor="middle">América</text>
+        <text class="t-f t-s" x="260" y="182" text-anchor="middle">Panamericanos · Panam Sports</text>
+        <text class="t-f" x="260" y="345" text-anchor="middle">Sudamérica</text>
+        <text class="t-f t-s" x="260" y="367" text-anchor="middle">Suramericanos · ODESUR</text>
+      </svg>
+      <div class="txt">
+        <p class="eyebrow">05 · Cómo se relacionan</p>
+        <h2 class="display h2">Cada evento, su alcance</h2>
+        <dl>
+          <div><dt>Suramericanos</dt><dd>Reúnen a los países de Sudamérica.</dd></div>
+          <div><dt>Panamericanos</dt><dd>Amplían la participación a todo el continente americano.</dd></div>
+          <div><dt>Olímpicos</dt><dd>Convocan a deportistas de todo el mundo que cumplen los requisitos de clasificación.</dd></div>
+        </dl>
+        <p class="aviso">Participar en una competencia no garantiza la clasificación a la siguiente. Los sistemas de clasificación dependen de cada deporte y de cada edición.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band idea">
+    <div class="wrap">
+      <p class="eyebrow">Idea central</p>
+      <blockquote>Un calendario de muchas escalas, cada evento con su función.</blockquote>
+      <p>Algunos forman parte de los procesos de clasificación olímpica, pero no todos llevan directamente a los Juegos Olímpicos. De Santa Fe 2026 a Lima 2027 y Los Ángeles 2028, el calendario muestra cómo se conectan los grandes eventos.</p>
+    </div>
+  </section>
+
+  <section class="band fuentes">
+    <div class="wrap">
+      <p class="eyebrow">Fuentes de consulta</p>
+      <ul>
+        <li><a href="https://olympics.com/" target="_blank" rel="noopener"><b>Comité Olímpico Internacional</b><span>olympics.com</span></a></li>
+        <li><a href="https://www.odesur.org/" target="_blank" rel="noopener"><b>ODESUR</b><span>odesur.org</span></a></li>
+        <li><a href="https://www.panamsports.org/" target="_blank" rel="noopener"><b>Panam Sports</b><span>panamsports.org</span></a></li>
+        <li><a href="https://www.lima2027.org.pe/" target="_blank" rel="noopener"><b>Lima 2027</b><span>lima2027.org.pe</span></a></li>
+        <li><a href="https://la28.org/" target="_blank" rel="noopener"><b>Los Ángeles 2028</b><span>la28.org</span></a></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Material educativo independiente. No está afiliado al COI, ODESUR, Panam Sports ni a ningún comité organizador. Fechas según los calendarios anunciados; Iquique 2027 tiene confirmado el mes (marzo) y sus días están a confirmar.</p>
+    <p class="mono">Hecho en Rosario</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // Sol: rayos alternos largos y cortos alrededor del disco
+  var g=document.getElementById('rays'), ns='http://www.w3.org/2000/svg', html='';
+  html+='<circle class="disc" cx="310" cy="310" r="120"/>';
+  for(var i=0;i<32;i++){var a=i*360/32,l=i%2?60:110;html+='<rect class="ray" x="'+(310+140)+'" y="303" width="'+l+'" height="14" rx="7" transform="rotate('+a+' 310 310)"/>';}
+  g.innerHTML=html;
+
+  var D=function(s){return new Date(s)};
+  var EV=[
+    {id:'sf',nombre:'Santa Fe 2026',evento:'Juegos Suramericanos',lugar:'Santa Fe, Rosario y Rafaela · Argentina',nivel:'regional',ini:D('2026-09-12T00:00:00-03:00'),fin:D('2026-09-26T23:59:59-03:00'),fechas:'12 — 26.09.2026',corto:'Sep 2026',desc:'La edición que pasó por casa, organizada por ODESUR.'},
+    {id:'dk',nombre:'Dakar 2026',evento:'Juegos Olímpicos de la Juventud',lugar:'Dakar, Senegal',nivel:'olimpico',ini:D('2026-10-31T00:00:00Z'),fin:D('2026-11-13T23:59:59Z'),fechas:'31.10 — 13.11.2026',corto:'Oct–Nov 2026',desc:'La cita olímpica para deportistas jóvenes. Primera vez en África.'},
+    {id:'iq',nombre:'Iquique 2027',evento:'Juegos Suramericanos de Playa',lugar:'Iquique, Chile',nivel:'regional',ini:D('2027-03-01T00:00:00-03:00'),fin:D('2027-03-31T23:59:59-03:00'),fechas:'Marzo 2027 · días a confirmar',corto:'Mar 2027',desc:'14 disciplinas de playa y mar, más de 1.000 atletas de 15 países.',aprox:true},
+    {id:'li',nombre:'Lima 2027',evento:'Juegos Panamericanos',lugar:'Lima, Perú',nivel:'continental',ini:D('2027-07-23T00:00:00-05:00'),fin:D('2027-08-08T23:59:59-05:00'),fechas:'23.07 — 08.08.2027',corto:'Jul–Ago 2027',desc:'El gran encuentro multideportivo del continente americano.'},
+    {id:'la',nombre:'Los Ángeles 2028',evento:'Juegos Olímpicos de Verano',lugar:'Los Ángeles, Estados Unidos',nivel:'olimpico',ini:D('2028-07-14T00:00:00-07:00'),fin:D('2028-07-30T23:59:59-07:00'),fechas:'14 — 30.07.2028',corto:'Jul 2028',desc:'La cita principal del calendario olímpico de verano.'}
+  ];
+  var NIV={regional:'Regional',continental:'Continental',mundial:'Mundial',olimpico:'Olímpico'};
+  var now=new Date();
+  function estado(e){return now>e.fin?'past':(now>=e.ini?'live':'future')}
+  var next=EV.filter(function(e){return estado(e)!=='past'})[0];
+
+  // Próxima parada
+  if(next){
+    document.getElementById('next-name').textContent=next.nombre;
+    document.getElementById('next-sub').textContent=next.evento+' · '+next.lugar;
+    document.getElementById('next-dates').textContent=next.fechas;
+    var nv=document.getElementById('next-nivel');nv.textContent=NIV[next.nivel];nv.className='po-nivel n-'+next.nivel;
+    var pad=function(n){return String(n).padStart(2,'0')};
+    var tick=function(){
+      var t=new Date(), ms=next.ini-t;
+      if(estado(next)==='live'){document.getElementById('count').innerHTML='<span class="estado vivo" style="grid-column:1/-1;font-size:14px">● En curso hasta el '+next.fechas.split('—').pop().trim()+'</span>';return}
+      if(ms<0)ms=0;
+      var d=Math.floor(ms/864e5),h=Math.floor(ms/36e5)%24,m=Math.floor(ms/6e4)%60,s=Math.floor(ms/1e3)%60;
+      document.getElementById('c-d').textContent=pad(d);document.getElementById('c-h').textContent=pad(h);
+      document.getElementById('c-m').textContent=pad(m);document.getElementById('c-s').textContent=pad(s);
+    };
+    tick();setInterval(tick,1000);
+  }
+
+  // Línea de tiempo a escala
+  var A=D('2026-09-01T00:00:00Z'),B=D('2028-09-01T00:00:00Z');
+  var pct=function(d){return Math.max(0,Math.min(100,(d-A)/(B-A)*100))};
+  var tr=document.getElementById('track'),h='<div class="axis"><div class="done" style="width:'+pct(now)+'%"></div></div>';
+  ['2027','2028'].forEach(function(y){h+='<span class="year" style="left:'+pct(D(y+'-01-01T00:00:00Z'))+'%">'+y+'</span>'});
+  EV.forEach(function(e,i){
+    var mid=new Date((+e.ini + +e.fin)/2),st=estado(e),cls=(i%2?'down':'up')+(st==='past'?' past':'')+(e===next?' next':'');
+    var inner='<span class="nm">'+e.nombre+'</span><span class="dt">'+e.evento+'<br>'+e.corto+'</span>';
+    h+='<div class="ev '+cls+'" style="left:'+pct(mid)+'%">'+(i%2?'<span class="stem"></span>'+inner:inner+'<span class="stem"></span>')+'<span class="dot"></span></div>';
+  });
+  h+='<div class="hoy" style="left:'+pct(now)+'%"><span>HOY</span></div>';
+  tr.innerHTML=h;
+  // Evitar que las etiquetas de los extremos se salgan del contenedor
+  tr.querySelectorAll('.ev').forEach(function(el){
+    var p=parseFloat(el.style.left);
+    if(p<8){el.style.transform='translateX(-20%)'} else if(p>92){el.style.transform='translateX(-80%)'}
+  });
+
+  // Lista vertical (mobile)
+  document.getElementById('tl-list').innerHTML=EV.map(function(e){
+    var st=estado(e);return '<li class="'+(st==='past'?'past':'')+(e===next?' next':'')+'"><span class="f">'+e.corto+'</span><span class="d"></span><span><b>'+e.nombre+'</b>'+e.evento+'</span></li>';
+  }).join('');
+
+  // Tarjetas de lo que viene
+  document.getElementById('cards').innerHTML=EV.filter(function(e){return estado(e)!=='past'}).map(function(e){
+    var st=estado(e),dias=Math.ceil((e.ini-now)/864e5);
+    var falta=st==='live'?'<span class="estado vivo">● En curso</span>':(e.aprox?'Faltan ~'+Math.round(dias/30)+' meses':'Faltan '+dias+' días');
+    return '<article class="card'+(e===next?' next':'')+'"><div class="top"><span class="po-nivel n-'+e.nivel+'">'+NIV[e.nivel]+'</span><span class="estado">'+(e===next?'Próximo':'Agendado')+'</span></div>'
+      +'<span class="dt">'+e.fechas+'</span><h3>'+e.nombre+'</h3><p class="lugar">'+e.evento+'</p><p>'+e.lugar+'. '+e.desc+'</p><span class="falta">'+falta+'</span></article>';
+  }).join('');
+})();
+</script>
+</body>
+</html>
